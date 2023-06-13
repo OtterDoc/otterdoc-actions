@@ -180,14 +180,10 @@ export const documentJsTs = async (file: string): Promise<void> => {
   if (documentableParts.length > 0) {
     console.log('Documentable Parts:')
     documentableParts.forEach((part, index) => {
-      console.log(
-        `    ${index + 1}:`,
-        part.nodeDisplayName.substring(0, 50) +
-          (part.nodeDisplayName.length > 50)
-          ? '...'
-          : ''
-      )
+      console.log(`    ${index + 1}:`, part.nodeDisplayName.substring(0, 50))
     })
+  } else {
+    console.log('No documentable parts found')
   }
 
   // Sort documentableParts in descending order by lineNumber
