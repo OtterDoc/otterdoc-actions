@@ -5,7 +5,6 @@ import {encode} from 'gpt-3-encoder'
 import ts from 'typescript'
 import {getNodeTypeString, isNodeExported} from './utils/nodeTypeHelper'
 import {replaceOrInsertComment} from './utils/updateTsJsComment'
-import otterConfig from '../otterConfigLoad'
 dotenvConfig()
 
 interface ResponseData {
@@ -35,50 +34,38 @@ interface DocumentablePart {
 const generateDocumentation = async (
   part: DocumentablePart
 ): Promise<string | null> => {
-  console.log('MADE IT HERE')
-  if (otterConfig.debug) {
-    // Return static comment
-    return `/**
-* Represents a network with Ethereum Virtual Machine (EVM) capabilities.
-*
-* @class
-* @extends Network
-*/`
-  } else {
-    try {
-      const otterdocUrl = process.env.OTTERDOC_URL || 'https://www.otterdoc.ai'
+  try {
+    const otterdocUrl = process.env.OTTERDOC_URL || 'https://www.otterdoc.ai'
 
-      const previousComment =
-        part.leadingComments && part.leadingComments.length > 0
-          ? part.leadingComments[0].comment
-          : ''
-      const response = await axios.post(
-        otterdocUrl + '/api/getComment',
-        {
-          apiKey: process.env.INPUT_KEY,
-          functionString: part.code,
-          previousComment: previousComment,
-          funcType: part.type
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
+    const previousComment =
+      part.leadingComments && part.leadingComments.length > 0
+        ? part.leadingComments[0].comment
+        : ''
+    const response = await axios.post(
+      otterdocUrl + '/api/getComment',
+      {
+        apiKey: process.env.INPUT_KEY,
+        functionString: part.code,
+        previousComment: previousComment,
+        funcType: part.type
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json'
         }
-      )
-
-      if (!response.data) {
-        throw new Error(`HTTP error! status: ${response.status}`)
       }
+    )
 
-      console.log('Got response from API', response.data)
-      const data = response.data as ResponseData
-      const documentation = data.comment
-      return documentation
-    } catch (error) {
-      console.error('Error during API request:', error)
-      return null
+    if (!response.data) {
+      throw new Error(`HTTP error! status: ${response.status}`)
     }
+
+    const data = response.data as ResponseData
+    const documentation = data.comment
+    return documentation
+  } catch (error) {
+    console.error('Error during API request:', error)
+    return null
   }
 }
 
@@ -128,20 +115,25 @@ const extractDocumentableParts = (
           if (isTypeDocComment(comment)) {
             // Check if the comment is directly above the current node
             // This is done by checking if there is an empty line
-            const commentEndLineNumber = sourceFile.getLineAndCharacterOfPosition(commentRange.end).line + 1
-            const nodeStartLineNumber = sourceFile.getLineAndCharacterOfPosition(node.getStart()).line + 1
+            const commentEndLineNumber =
+              sourceFile.getLineAndCharacterOfPosition(commentRange.end).line +
+              1
+            const nodeStartLineNumber =
+              sourceFile.getLineAndCharacterOfPosition(node.getStart()).line + 1
             const diff = nodeStartLineNumber - commentEndLineNumber
             // Check if the lines between the comment and the node are empty
             let hasEmptyLine = false
             for (let i = 1; i < diff; i++) {
-              const line = sourceFile.text.split('\n')[commentEndLineNumber + i - 1].trim()
+              const line = sourceFile.text
+                .split('\n')
+                [commentEndLineNumber + i - 1].trim()
               if (line === '') {
                 hasEmptyLine = true
                 break
               }
             }
             if (!hasEmptyLine) {
-              comments.push({ comment: comment, range: commentRange })
+              comments.push({comment: comment, range: commentRange})
             }
           }
         })
@@ -211,5 +203,5 @@ export const documentJsTs = async (file: string): Promise<void> => {
   // Write the modified file content to the original file, thus overwriting it
   fs.writeFileSync(file, updatedFileContent)
 
-  console.log(documentableParts)
+  console.log('documentableParts', documentableParts)
 }

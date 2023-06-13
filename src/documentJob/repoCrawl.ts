@@ -53,7 +53,6 @@ const traverseDirectory = async (
     const relativePath = path.relative(basePath, entryPath)
 
     if (ig && ig.ignores(relativePath)) {
-      // console.log(`Skipping ignored path: ${entryPath}`);
       return
     }
 

@@ -8,12 +8,6 @@ import traverse, {Node, NodePath} from '@babel/traverse'
 
 const API_BASE_URL = 'https://www.codescribe.co'
 
-// export enum ScanType {
-//   SCAN_ALL_FUNCTIONS = 0,
-//   SCAN_NEW_FUNCTIONS,
-//   SCAN_CURRENT_FUNCTION
-// }
-
 export async function CommentFile(filePath: string): Promise<boolean> {
   console.log(`Commenting file: ${filePath}`)
   const commentedFileString = await GetCommentedFileString(filePath)
@@ -115,51 +109,8 @@ export async function GetCommentedFileString(
       updatedSourceCode.substring(insertPos)
   }
 
-  // for (let i = 0; i < declarations.length; i++) {
-  //   const path = declarations[i]
-  //   const funcStartPos = path.node.start
-  //   const end = path.node.end
-
-  //   if (funcStartPos !== undefined && end !== undefined) {
-  //     const typedocComments = getComments(sourceCode, path.node)
-  //     const newComment = fetchedComments[i]
-
-  //     if (newComment) {
-  //       // const funcStartPos = sourceCode.positionAt(start)
-  //       try {
-  //         if (typedocComments.length === 0) {
-  //           textEdits =
-  //             textEdits +
-  //             (await updateComment(sourceCode, funcStartPos, null, newComment))
-  //         } else {
-  //           const commentStart = sourceCode.indexOf(typedocComments[0])
-  //           const commentEnd =
-  //             sourceCode.indexOf(
-  //               '\n',
-  //               commentStart + typedocComments[0].length
-  //             ) - 1 // Subtract 1 to exclude the newline character
-  //           const endPos = commentEnd
-  //           const startPos = commentStart
-  //           textEdits =
-  //             textEdits +
-  //             (await updateComment(sourceCode, startPos, endPos, newComment))
-  //         }
-  //       } catch (error) {
-  //         console.log(error)
-  //       }
-  //     }
-  //   }
-  // }
-
   return updatedSourceCode
 }
-
-// class DocumentVersionChangedError extends Error {
-//   constructor(message: string) {
-//     super(message)
-//     this.name = 'DocumentVersionChangedError'
-//   }
-// }
 
 function formatComment(comment: string): string {
   const match = comment.match(/\/\*\*[\s\S]*?\*\//)
@@ -206,60 +157,6 @@ async function fetchCommentForCodeChunk(
     )
   }
 }
-
-// function updateComment(
-//   document: string,
-//   start: vscode.Position,
-//   end: vscode.Position | null,
-//   newComment: string
-// ): vscode.TextEdit {
-//   let lineWithFunction = document.lineAt(start.line + 1)
-
-//   while (
-//     lineWithFunction.text.trim().startsWith('*') ||
-//     lineWithFunction.text.trim().startsWith('*/')
-//   ) {
-//     lineWithFunction = document.lineAt(lineWithFunction.lineNumber + 1)
-//   }
-
-//   const originalIndentation = document.lineAt(start.line).text.match(/^\s*/)![0]
-
-//   const lineWithCode = document.lineAt(start.line).text
-
-//   if (lineWithCode.startsWith('/**')) {
-//     // There is an existing typedoc comment
-//     const commentEndPosition = document.positionAt(
-//       document.getText().indexOf('*/', start.character)
-//     )
-//     const replaceRange = new vscode.Range(
-//       start,
-//       commentEndPosition.translate(0, 2)
-//     )
-
-//     const indentedCommentLines = newComment
-//       .split('\n')
-//       .map((line, index) => {
-//         if (index === 0) {
-//           return line
-//         } else {
-//           return originalIndentation + line.trimStart()
-//         }
-//       })
-//       .join('\n')
-
-//     return vscode.TextEdit.replace(replaceRange, indentedCommentLines)
-//   } else {
-//     // There is no existing typedoc comment
-//     const indentedCommentLines =
-//       newComment
-//         .split('\n')
-//         .filter(line => line)
-//         .map(line => originalIndentation + line.trimStart())
-//         .join('\n') + '\n'
-//     const insertPosition = new vscode.Position(start.line, 0)
-//     return vscode.TextEdit.insert(insertPosition, indentedCommentLines)
-//   }
-// }
 
 function getComments(sourceCode: string, node: Node): string[] {
   const leadingComments = node.leadingComments

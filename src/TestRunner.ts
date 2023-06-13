@@ -3,7 +3,7 @@ require('dotenv').config({path: path.resolve(__dirname, './.env')})
 
 import {RunActionStep} from './RunActionStep'
 
-console.log(`Running the test!`)
+console.log(`TestRunner`)
 process.env['GITHUB_WORKSPACE'] = path.join(__dirname, '../samples')
 console.log(`Working in repo at: ${process.env['GITHUB_WORKSPACE']}`)
 
