@@ -46,5 +46,5 @@ export function isNodeExported(node: ts.Node): boolean {
 };
 
 export function getNodeDisplayName(node: ts.Node): string {
-  return node.getText()
+  return node.getText().split('\n')[0].trim() || 'Unknown'
 };

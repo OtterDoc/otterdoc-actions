@@ -3,7 +3,11 @@ import {config as dotenvConfig} from 'dotenv'
 import fs from 'fs'
 import {encode} from 'gpt-3-encoder'
 import ts from 'typescript'
-import {getNodeDisplayName, getNodeTypeString, isNodeExported} from './utils/nodeTypeHelper'
+import {
+  getNodeDisplayName,
+  getNodeTypeString,
+  isNodeExported
+} from './utils/nodeTypeHelper'
 import {replaceOrInsertComment} from './utils/updateTsJsComment'
 dotenvConfig()
 
@@ -29,7 +33,7 @@ interface DocumentablePart {
   nodeDisplayName: string
   lineNumber?: number //used for sorting
   documentation?: string
-  leadingComments?: {comment: string; range: ts.TextRange}[],
+  leadingComments?: {comment: string; range: ts.TextRange}[]
 }
 
 const generateDocumentation = async (
@@ -141,7 +145,6 @@ const extractDocumentableParts = (
         })
       }
 
-
       const start =
         sourceFile.getLineAndCharacterOfPosition(node.getStart()).line + 1
       documentableParts.push({
@@ -150,7 +153,7 @@ const extractDocumentableParts = (
         isPublic: isExported,
         nodeDisplayName,
         lineNumber: start,
-        leadingComments: comments,
+        leadingComments: comments
       })
     }
     ts.forEachChild(node, visit)
@@ -208,5 +211,12 @@ export const documentJsTs = async (file: string): Promise<void> => {
   // Write the modified file content to the original file, thus overwriting it
   fs.writeFileSync(file, updatedFileContent)
 
-  console.log('documentableParts', documentableParts)
+  if (documentableParts.length > 0) {
+    console.log('Documentable Parts:')
+    documentableParts.forEach((part, index) => {
+      console.log(`${index + 1}:`, part.nodeDisplayName)
+    })
+  } else {
+    console.log('No documentable parts found')
+  }
 }
