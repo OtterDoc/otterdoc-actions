@@ -1,8 +1,7 @@
 /**
- * Represents a user with a name and an ID.
- * @interface
- * @property {string} name - The name of the user.
- * @property {number} id - The ID of the user.
+ * Interface for a User object.
+ * @param {string} name - The name of the user.
+ * @param {number} id - The unique identifier of the user.
  */
 //this function works well
 export interface User {
@@ -26,8 +25,8 @@ export class UserAccount {
 }
 
 /**
- * Returns a new UserAccount object with the name 'Murphy' and ID 1, representing an admin user.
- * @returns {User} The admin user object.
+ * Returns a new instance of UserAccount with the name 'Murphy' and id 1.
+ * @returns {User} A User object representing the admin user.
  */
 export function getAdminUser(): User {
   return new UserAccount('Murphy', 1)
