@@ -24,11 +24,6 @@ jobs:
   document-changed-files:
     runs-on: ${{ fromJSON('["ubuntu-latest", "self-hosted"]')[github.repository == 'github/docs-internal'] }}
     steps:
-      - name: Example step where the github-actions bot makes a git commit
-          run: |
-            git config user.name OtterDoc
-            git config user.email otter@otterdoc.ai
-      
       - name: Checkout
         uses: actions/checkout@v3
       
