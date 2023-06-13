@@ -177,6 +177,19 @@ export const documentJsTs = async (file: string): Promise<void> => {
   let fileContent = fs.readFileSync(file, 'utf8')
   let documentableParts = extractDocumentableParts(fileContent, options)
 
+  if (documentableParts.length > 0) {
+    console.log('Documentable Parts:')
+    documentableParts.forEach((part, index) => {
+      console.log(
+        `    ${index + 1}:`,
+        part.nodeDisplayName.substring(0, 50) +
+          (part.nodeDisplayName.length > 50)
+          ? '...'
+          : ''
+      )
+    })
+  }
+
   // Sort documentableParts in descending order by lineNumber
   documentableParts = documentableParts.sort(
     (a, b) => b.lineNumber! - a.lineNumber!
@@ -210,13 +223,4 @@ export const documentJsTs = async (file: string): Promise<void> => {
 
   // Write the modified file content to the original file, thus overwriting it
   fs.writeFileSync(file, updatedFileContent)
-
-  if (documentableParts.length > 0) {
-    console.log('Documentable Parts:')
-    documentableParts.forEach((part, index) => {
-      console.log(`${index + 1}:`, part.nodeDisplayName)
-    })
-  } else {
-    console.log('No documentable parts found')
-  }
 }
