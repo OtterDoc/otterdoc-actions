@@ -38,7 +38,6 @@ jobs:
         uses: Hedge-Finance/otterdoc-actions@main # TODO Change this. Testing only
         with:
           key: ${{ secrets.OTTERDOC_KEY }}
-          # files: ${{ steps.changed_files.outputs.files }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5.0.1
