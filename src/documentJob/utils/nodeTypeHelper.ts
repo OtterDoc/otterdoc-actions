@@ -1,5 +1,10 @@
 import * as ts from 'typescript'
 
+/**
+ * Returns a string indicating the type of the provided TypeScript node.
+ * @param {ts.Node} node - The TypeScript node to determine the type of.
+ * @returns {string | undefined} - A string indicating the type of the provided node, or undefined if the node is not a recognized type.
+ */
 export function getNodeTypeString(node: ts.Node): string | undefined {
   if (ts.isClassDeclaration(node)) {
     return 'ClassDeclaration'
@@ -22,6 +27,11 @@ export function getNodeTypeString(node: ts.Node): string | undefined {
   }
 }
 
+/**
+ * Determines whether a given TypeScript node is exported or not.
+ * @param {ts.Node} node - The TypeScript node to check.
+ * @returns {boolean} - Returns true if the node is exported, false otherwise.
+ */
 export function isNodeExported(node: ts.Node): boolean {
   if (ts.isClassElement(node)) {
     const modifiers = ts.getCombinedModifierFlags(node)
@@ -45,6 +55,11 @@ export function isNodeExported(node: ts.Node): boolean {
   return false
 };
 
+/**
+ * Returns the display name of a TypeScript node.
+ * @param {ts.Node} node - The TypeScript node to get the display name of.
+ * @returns {string} The display name of the node.
+ */
 export function getNodeDisplayName(node: ts.Node): string {
   return node.getText().split('\n')[0].trim() || 'Unknown'
 };

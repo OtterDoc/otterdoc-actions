@@ -1,6 +1,15 @@
 import * as core from '@actions/core'
 import axios from 'axios'
 
+/**
+ * Verifies the OtterDoc key provided.
+ * @async
+ * @function VerifyOtterDocKey
+ * @param {string} key - The OtterDoc key to be verified.
+ * @returns {Promise<boolean>} - A promise that resolves to a boolean indicating whether the key is valid or not.
+ * @remarks
+ * If the key is not provided, a warning message will be logged and the function will return false. To add the key, go to your repo page, click "settings", expand "secrets and variables" on the left hand side, select "Actions" submenu, click the "New repository secret" button, and set the key name to "OTTERDOC_KEY". You can get your OtterDoc key at https://www.otterdoc.ai under your account.
+ */
 export async function VerifyOtterDocKey(key: string): Promise<boolean> {
   const otterdocUrl = process.env.OTTERDOC_URL || 'https://www.otterdoc.ai'
 
