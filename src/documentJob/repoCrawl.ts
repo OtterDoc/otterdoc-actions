@@ -74,6 +74,7 @@ export const documentRepo = async (directoryPath: string): Promise<void> => {
   const basePath = path.join(directoryPath)
   const gitignore = await readIgnoreFile(basePath, '.gitignore')
   const dockerignore = await readIgnoreFile(basePath, '.dockerignore')
+  const otterdocIgnore = await readIgnoreFile(basePath, '.otterdocignore')
 
   // Create a combined ignore object
   const combinedIgnore = ignore()
@@ -84,6 +85,9 @@ export const documentRepo = async (directoryPath: string): Promise<void> => {
   }
   if (dockerignore) {
     combinedIgnore.add(dockerignore)
+  }
+  if (otterdocIgnore) {
+    combinedIgnore.add(otterdocIgnore)
   }
 
   if (combinedIgnore) {
