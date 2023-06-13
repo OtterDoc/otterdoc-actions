@@ -3,6 +3,7 @@ import axios from 'axios'
 
 export async function VerifyOtterDocKey(key: string): Promise<boolean> {
   const otterdocUrl = process.env.OTTERDOC_URL || 'https://www.otterdoc.ai'
+  console.log("version 1.2")
   const result = await axios
     .get(otterdocUrl + `/api/verify-key?key=${key}`)
     .catch(error => {
