@@ -50,4 +50,4 @@ jobs:
             labels: documentation, typescript
             branch: '${{ steps.extract_branch.outputs.branch }}-otterdoc'
             delete-branch: true
-            author: OtterDoc <otter@otterdoc.ai> 
+            author: OtterDoc <otter@otterdoc.ai>
