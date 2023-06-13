@@ -173,17 +173,20 @@ const options: ExtractOptions = {
 }
 
 export const documentJsTs = async (file: string): Promise<void> => {
-  console.log(`Documenting file: ${file}`)
   let fileContent = fs.readFileSync(file, 'utf8')
   let documentableParts = extractDocumentableParts(fileContent, options)
 
   if (documentableParts.length > 0) {
-    console.log('Documentable Parts:')
     documentableParts.forEach((part, index) => {
-      console.log(`    ${index + 1}:`, part.nodeDisplayName.substring(0, 50))
+      console.log(`Documentable Part in file ${file}:`)
+      console.log(
+        `    ${index + 1}:`,
+        part.nodeDisplayName.substring(0, 50),
+        part.nodeDisplayName.length > 50 ? '...' : ''
+      )
     })
   } else {
-    console.log('No documentable parts found')
+    console.log(`No documentable parts found in file: ${file}`)
   }
 
   // Sort documentableParts in descending order by lineNumber
@@ -198,7 +201,7 @@ export const documentJsTs = async (file: string): Promise<void> => {
     // Check if the part exceeds the token limit
     const tokens = encode(part.code)
     if (tokens.length > 4096) {
-      console.log(`Part exceeds the token limit: ${part.code}`)
+      console.log(`Part exceeds the token limit. Cannot document at this time.`)
       continue
     }
 

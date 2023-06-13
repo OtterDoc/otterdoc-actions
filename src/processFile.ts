@@ -59,8 +59,6 @@ export async function GetCommentedFileString(
   // Reverse sort the array to start from the bottom to avoid line clashes
   declarations.sort((a, b) => b.node.start || 0 - (a.node.start || 0)).reverse()
 
-  console.log('Output Functions text')
-
   const fetchedCommentsPromises = declarations.map(async path => {
     if (path.node.leadingComments) {
       console.log('Existing comments found', path.node.leadingComments)
