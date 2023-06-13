@@ -11,11 +11,25 @@ import {
 import {replaceOrInsertComment} from './utils/updateTsJsComment'
 dotenvConfig()
 
+/**
+ * Interface for response data.
+ * @param {string} comment - The comment for the response.
+ */
 interface ResponseData {
   comment: string
   // Define other properties here if necessary
 }
 
+/**
+ * Options for extracting specific types of declarations from a codebase.
+ * @property {boolean} ArrowFunctionExpression - Whether or not to extract Arrow Function Expressions.
+ * @property {boolean} ClassDeclaration - Whether or not to extract Class Declarations.
+ * @property {boolean} ClassMethod - Whether or not to extract Class Methods.
+ * @property {boolean} FunctionDeclaration - Whether or not to extract Function Declarations.
+ * @property {boolean} InterfaceDeclaration - Whether or not to extract Interface Declarations.
+ * @property {boolean} TypeAlias - Whether or not to extract Type Aliases.
+ * @property {boolean} EnumDeclaration - Whether or not to extract Enum Declarations.
+ */
 interface ExtractOptions {
   ArrowFunctionExpression?: boolean
   ClassDeclaration?: boolean
@@ -26,6 +40,16 @@ interface ExtractOptions {
   EnumDeclaration?: boolean
 }
 
+/**
+ * Interface for a documentable part.
+ * @property {string} type - The type of the documentable part.
+ * @property {string} code - The code of the documentable part.
+ * @property {boolean} isPublic - Indicates whether the documentable part is public or not.
+ * @property {string} nodeDisplayName - The display name of the node.
+ * @property {number} [lineNumber] - The line number of the documentable part (used for sorting).
+ * @property {string} [documentation] - The documentation of the documentable part.
+ * @property {Object[]} [leadingComments] - The leading comments of the documentable part, with each comment containing a string and a range.
+ */
 interface DocumentablePart {
   type: string
   code: string
@@ -89,6 +113,12 @@ const extractDocumentableParts = (
     /*setParentNodes*/ true
   )
 
+  /**
+   * Checks if a given string is a key of the ExtractOptions object.
+   * @param {string} key - The key to check.
+   * @param {ExtractOptions} options - The options object to check against.
+   * @returns {boolean} - True if the key is a valid option key, false otherwise.
+   */
   function isOptionKey(
     key: string,
     options: ExtractOptions
@@ -99,10 +129,20 @@ const extractDocumentableParts = (
   }
 
   // Helper function to check if a comment is a TypeDoc comment
+  /**
+   * Determines if a given string is a valid TypeDoc comment.
+   * @param comment - The comment string to check.
+   * @returns {boolean} - True if the comment is a valid TypeDoc comment, false otherwise.
+   */
   function isTypeDocComment(comment: string): boolean {
     return comment.startsWith('/**') && !comment.startsWith('/***')
   }
 
+  /**
+   * Visits a TypeScript node and adds it to the list of documentable parts if it meets certain criteria.
+   * @param node The TypeScript node to visit.
+   * @returns void
+   */
   function visit(node: ts.Node): void {
     // Get the node type
     const type = getNodeTypeString(node)

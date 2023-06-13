@@ -1,6 +1,13 @@
 import * as core from '@actions/core'
 import axios from 'axios'
 
+/**
+ * Verifies if the provided OtterDoc key is valid by making a GET request to the OtterDoc API.
+ * @async
+ * @function VerifyOtterDocKey
+ * @param {string} key - The OtterDoc key to be verified.
+ * @returns {Promise<boolean>} - A Promise that resolves to a boolean indicating if the key is valid or not.
+ */
 export async function VerifyOtterDocKey(key: string): Promise<boolean> {
   const otterdocUrl = process.env.OTTERDOC_URL || 'https://www.otterdoc.ai'
 
