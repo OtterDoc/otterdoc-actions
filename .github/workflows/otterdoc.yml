@@ -43,6 +43,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5.0.1
         with:
+            author: OtterDoc <otter@otterdoc.ai>
             commit-message: OtterDoc - Update function documentation
             title: OtterDoc - Update function documentation
             body: OtterDoc - Update function documentation
@@ -50,4 +51,3 @@ jobs:
             labels: documentation, typescript
             branch: '${{ steps.extract_branch.outputs.branch }}-otterdoc'
             delete-branch: true
-            author: OtterDoc <otter@otterdoc.ai>
