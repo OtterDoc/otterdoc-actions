@@ -3,7 +3,7 @@ import {config as dotenvConfig} from 'dotenv'
 import fs from 'fs'
 import {encode} from 'gpt-3-encoder'
 import ts from 'typescript'
-import {getNodeTypeString, isNodeExported} from './utils/nodeTypeHelper'
+import {getNodeDisplayName, getNodeTypeString, isNodeExported} from './utils/nodeTypeHelper'
 import {replaceOrInsertComment} from './utils/updateTsJsComment'
 dotenvConfig()
 
@@ -26,9 +26,10 @@ interface DocumentablePart {
   type: string
   code: string
   isPublic: boolean
+  nodeDisplayName: string
   lineNumber?: number //used for sorting
   documentation?: string
-  leadingComments?: {comment: string; range: ts.TextRange}[]
+  leadingComments?: {comment: string; range: ts.TextRange}[],
 }
 
 const generateDocumentation = async (
@@ -101,7 +102,8 @@ const extractDocumentableParts = (
   function visit(node: ts.Node): void {
     // Get the node type
     const type = getNodeTypeString(node)
-    const isPublic = isNodeExported(node)
+    const isExported = isNodeExported(node)
+    const nodeDisplayName = getNodeDisplayName(node)
     // Check if the node is one we want to document
     if (type && isOptionKey(type, options)) {
       const leadingComments = ts.getLeadingCommentRanges(
@@ -138,14 +140,17 @@ const extractDocumentableParts = (
           }
         })
       }
+
+
       const start =
         sourceFile.getLineAndCharacterOfPosition(node.getStart()).line + 1
       documentableParts.push({
         type,
         code: node.getText(),
-        isPublic,
+        isPublic: isExported,
+        nodeDisplayName,
         lineNumber: start,
-        leadingComments: comments
+        leadingComments: comments,
       })
     }
     ts.forEachChild(node, visit)

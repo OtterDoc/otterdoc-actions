@@ -44,3 +44,7 @@ export function isNodeExported(node: ts.Node): boolean {
   }
   return false
 };
+
+export function getNodeDisplayName(node: ts.Node): string {
+  return node.getText()
+};
