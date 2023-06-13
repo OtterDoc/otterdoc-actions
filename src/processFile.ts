@@ -8,6 +8,13 @@ import traverse, {Node, NodePath} from '@babel/traverse'
 
 const API_BASE_URL = 'https://www.codescribe.co'
 
+/**
+ * CommentFile function that takes in a file path and returns a Promise that resolves to a boolean.
+ * @async
+ * @function
+ * @param {string} filePath - The path of the file to be commented.
+ * @returns {Promise<boolean>} - A Promise that resolves to true if the file was successfully commented, false otherwise.
+ */
 export async function CommentFile(filePath: string): Promise<boolean> {
   console.log(`Commenting file: ${filePath}`)
   const commentedFileString = await GetCommentedFileString(filePath)
@@ -19,6 +26,11 @@ export async function CommentFile(filePath: string): Promise<boolean> {
   return false
 }
 
+/**
+ * Asynchronously fetches comments for functions, interfaces, and classes in a given file path and inserts them into the source code.
+ * @param {string} filePath - The path of the file to fetch comments for.
+ * @returns {Promise<string>} - A promise that resolves with the updated source code with comments inserted.
+ */
 export async function GetCommentedFileString(
   filePath: string
   // scanType = ScanType.SCAN_NEW_FUNCTIONS
@@ -40,15 +52,36 @@ export async function GetCommentedFileString(
   const declarations: NodePath[] = []
 
   traverse(ast, {
+    /**
+     * Adds a declaration to the list of declarations.
+     * @param {Path} path - The path of the declaration to add.
+     */
     InterfaceDeclaration(path) {
       declarations.push(path)
     },
+    /**
+     * Adds a new function declaration to the list of declarations.
+     *
+     * @param {Path} path - The path of the function declaration.
+     * @class
+     * @remarks This method is part of the DeclarationCollector class.
+     */
     FunctionDeclaration(path) {
       declarations.push(path)
     },
+    /**
+     * Traverses a ClassDeclaration path and pushes all declarations and ClassMethod paths to an array.
+     * @param {NodePath} path - The ClassDeclaration path to traverse.
+     */
     ClassDeclaration(path) {
       declarations.push(path)
       path.traverse({
+        /**
+         * Adds the provided innerPath to the declarations array.
+         *
+         * @param {string} innerPath - The inner path to add to the declarations array.
+         * @returns {void}
+         */
         ClassMethod(innerPath) {
           declarations.push(innerPath)
         }
@@ -110,11 +143,26 @@ export async function GetCommentedFileString(
   return updatedSourceCode
 }
 
+/**
+ * Formats a comment string by extracting the TypeDoc comment block.
+ * @param comment - The comment string to format.
+ * @returns The formatted TypeDoc comment block.
+ */
 function formatComment(comment: string): string {
   const match = comment.match(/\/\*\*[\s\S]*?\*\//)
   return match ? `${match[0]}\n` : ''
 }
 
+/**
+ * Fetches a comment for a given code chunk from an API using the provided API key and previous comment (if any).
+ * @async
+ * @function
+ * @param {string} functionString - The code chunk to fetch a comment for.
+ * @param {string} apiKey - The API key to use for authentication.
+ * @param {string} [previousComment] - The previous comment for the code chunk, if any.
+ * @returns {Promise<string>} The fetched comment.
+ * @throws {Error} If the API key is missing or not provided, or if there is an error fetching the comment from the API.
+ */
 async function fetchCommentForCodeChunk(
   functionString: string,
   apiKey: string,
@@ -156,6 +204,12 @@ async function fetchCommentForCodeChunk(
   }
 }
 
+/**
+ * Returns an array of TypeDoc comments from the leading comments of a given node in the provided source code.
+ * @param {string} sourceCode - The source code to extract comments from.
+ * @param {Node} node - The node to extract leading comments from.
+ * @returns {string[]} - An array of TypeDoc comments.
+ */
 function getComments(sourceCode: string, node: Node): string[] {
   const leadingComments = node.leadingComments
   if (!leadingComments) {
@@ -172,6 +226,12 @@ function getComments(sourceCode: string, node: Node): string[] {
   return typedocComments
 }
 
+/**
+ * Finds the index of the previous newline character in a given source code string, starting from a given position.
+ * @param {string} sourceCode - The source code string to search in.
+ * @param {number} position - The starting position to search from.
+ * @returns {number} - The index of the previous newline character, or 0 if not found.
+ */
 function findPreviousNewlineCharacter(
   sourceCode: string,
   position: number
