@@ -34,7 +34,7 @@ export async function VerifyOtterDocKey(key: string): Promise<boolean> {
     })
 
   if (result?.status === 200) {
-    core.warning('Key is valid')
+    console.log('Key is valid')
     return true
   }
   return false
