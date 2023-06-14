@@ -34,10 +34,10 @@ const traverseDirectory = async (
   basePath: string,
   ig: Ignore | null,
   maxDepth = 3
-): Promise<void> => {
+): Promise<string[]> => {
   if (maxDepth < 0) {
     console.log(`Max depth reached for directory: ${directoryPath}`)
-    return
+    return []
   }
 
   let filesAndFolders
@@ -45,29 +45,37 @@ const traverseDirectory = async (
     filesAndFolders = await fs.readdir(directoryPath, {withFileTypes: true})
   } catch (error) {
     console.error(`Failed to read this directory 2: ${directoryPath}`)
-    return
+    return []
   }
 
-  const tasks = filesAndFolders.map(async entry => {
+  const filePaths = []
+
+  for await (const entry of filesAndFolders) {
     const entryPath = path.join(directoryPath, entry.name)
     const relativePath = path.relative(basePath, entryPath)
 
     if (ig && ig.ignores(relativePath)) {
-      return
+      continue
     }
 
     if (entry.isFile()) {
       try {
-        await processFile(entryPath)
+        filePaths.push(entryPath)
       } catch (error) {
         console.error(`Failed to process file: ${entryPath}`)
       }
     } else if (entry.isDirectory()) {
-      await traverseDirectory(entryPath, basePath, ig, maxDepth - 1) // Decrease maxDepth by 1
+      const subfolderFiles = await traverseDirectory(
+        entryPath,
+        basePath,
+        ig,
+        maxDepth - 1
+      ) // Decrease maxDepth by 1
+      filePaths.push(...subfolderFiles)
     }
-  })
+  }
 
-  await Promise.all(tasks)
+  return filePaths
 }
 
 export const DocumentRepo = async (directoryPath: string): Promise<void> => {
@@ -94,5 +102,17 @@ export const DocumentRepo = async (directoryPath: string): Promise<void> => {
     console.log('Skipping files based on ignore config')
   }
 
-  await traverseDirectory(basePath, basePath, combinedIgnore)
+  const filesToDocument = await traverseDirectory(
+    basePath,
+    basePath,
+    combinedIgnore
+  )
+
+  console.log(`Found ${filesToDocument.length} files to document`)
+
+  for await (const file of filesToDocument) {
+    console.log(`Processing file: ${file}`)
+    await processFile(file)
+    console.log(`Done processing file: ${file}`)
+  }
 }
