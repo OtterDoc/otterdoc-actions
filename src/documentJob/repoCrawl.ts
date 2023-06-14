@@ -110,9 +110,13 @@ export const DocumentRepo = async (directoryPath: string): Promise<void> => {
 
   console.log(`Found ${filesToDocument.length} files to document`)
 
+  let currentCount = 0
   for await (const file of filesToDocument) {
-    console.log(`Processing file: ${file}`)
+    console.log(
+      `[${currentCount}/${filesToDocument.length}]Processing file: ${file}`
+    )
     await DocumentTypeScriptFile(file)
     console.log(`Done processing file: ${file}`)
+    currentCount++
   }
 }
