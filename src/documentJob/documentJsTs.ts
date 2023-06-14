@@ -219,7 +219,7 @@ const options: ExtractOptions = {
   EnumDeclaration: true
 }
 
-export const documentJsTs = async (file: string): Promise<void> => {
+export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
   let fileContent = fs.readFileSync(file, 'utf8')
   let documentableParts = extractDocumentableParts(fileContent, options)
 

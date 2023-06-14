@@ -1,19 +1,17 @@
 import fs from 'fs/promises'
 import path from 'path'
 import ignore, {Ignore} from 'ignore'
-import {documentJsTs} from './documentJsTs'
+import {DocumentTypeScriptFile} from './documentJsTs'
 
-export const processFile = async (file: string): Promise<void> => {
+export const shouldProcessFile = (file: string): boolean => {
   const ext = path.extname(file)
   switch (ext) {
     case '.js':
-      await documentJsTs(file)
-      break
     case '.ts':
-      await documentJsTs(file)
-      break
+      return true
     // Add more cases if needed
   }
+  return false
 }
 
 const readIgnoreFile = async (
@@ -60,7 +58,9 @@ const traverseDirectory = async (
 
     if (entry.isFile()) {
       try {
-        filePaths.push(entryPath)
+        if (shouldProcessFile(entryPath)) {
+          filePaths.push(entryPath)
+        }
       } catch (error) {
         console.error(`Failed to process file: ${entryPath}`)
       }
@@ -112,7 +112,7 @@ export const DocumentRepo = async (directoryPath: string): Promise<void> => {
 
   for await (const file of filesToDocument) {
     console.log(`Processing file: ${file}`)
-    await processFile(file)
+    await DocumentTypeScriptFile(file)
     console.log(`Done processing file: ${file}`)
   }
 }
