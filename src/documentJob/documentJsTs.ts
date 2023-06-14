@@ -9,9 +9,12 @@ import {
   getNodeTypeString,
   isNodeExported
 } from './utils/nodeTypeHelper'
-import { isMinified } from './utils/isMinifiedFile'
+import {isMinified} from './utils/isMinifiedFile'
 import {replaceOrInsertComment} from './utils/updateTsJsComment'
+import {loadYmlKeys} from './utils/loadYmlKeys'
 dotenvConfig()
+
+const ymlKeys = loadYmlKeys()
 
 /**
  * Interface for response data.
@@ -155,15 +158,17 @@ const extractDocumentableParts = (
    */
   function visit(node: ts.Node): void {
     // check if the function is a short function
-    const functionLines = code
-      .substring(node.getStart(), node.getEnd())
-      .split('\n')
-      .filter(line => line.trim().length > 0)
-    const isShortFunction = functionLines.length <= 2 // Adjust the threshold as needed
+    if (ymlKeys.ignoreSingleLineFunctions) {
+      const functionLines = code
+        .substring(node.getStart(), node.getEnd())
+        .split('\n')
+        .filter(line => line.trim().length > 0)
+      const isShortFunction = functionLines.length <= 2 // Adjust the threshold as needed
 
-    if (isShortFunction) {
-      // Skip short functions without adding them to the documentable parts
-      return
+      if (isShortFunction) {
+        // Skip short functions without adding them to the documentable parts
+        return
+      }
     }
     // Get the node type
     const type = getNodeTypeString(node)
@@ -206,6 +211,11 @@ const extractDocumentableParts = (
         })
       }
 
+      // If 'ignoreAlreadyCommented' is true and the function has comments, skip this function
+      if (ymlKeys.ignoreAlreadyCommented && comments.length > 0) {
+        return
+      }
+      
       const start =
         sourceFile.getLineAndCharacterOfPosition(node.getStart()).line + 1
       documentableParts.push({
