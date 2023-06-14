@@ -154,6 +154,17 @@ const extractDocumentableParts = (
    * @returns void
    */
   function visit(node: ts.Node): void {
+    // check if the function is a short function
+    const functionLines = code
+      .substring(node.getStart(), node.getEnd())
+      .split('\n')
+      .filter(line => line.trim().length > 0)
+    const isShortFunction = functionLines.length <= 2 // Adjust the threshold as needed
+
+    if (isShortFunction) {
+      // Skip short functions without adding them to the documentable parts
+      return
+    }
     // Get the node type
     const type = getNodeTypeString(node)
     const isExported = isNodeExported(node)
