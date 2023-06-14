@@ -18,8 +18,10 @@ export function inclementCount(): number {
 }
 
 export function getPercentComplete(): string {
-  if (completedFiles === 0) {
-    return `0%`
+  if (totalFiles === 0) {
+    return `[--%](${completedFiles}/${totalFiles} files complete) `
   }
-  return `[${Math.floor((completedFiles / totalFiles) * 100)}%](${completedFiles}/${totalFiles} files complete) `
+  return `[${Math.floor(
+    (completedFiles / totalFiles) * 100
+  )}%](${completedFiles}/${totalFiles} files complete) `
 }
