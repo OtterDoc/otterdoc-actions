@@ -3,17 +3,13 @@ import {config as dotenvConfig} from 'dotenv'
 import fs from 'fs'
 import {encode} from 'gpt-3-encoder'
 import ts from 'typescript'
-<<<<<<< Updated upstream
 import {getPercentComplete, inclementCount} from './utils/Progress'
 import {
   getNodeDisplayName,
   getNodeTypeString,
   isNodeExported
 } from './utils/nodeTypeHelper'
-=======
-import {getNodeTypeString, isNodeExported} from './utils/nodeTypeHelper'
 import { isMinified } from './utils/isMinifiedFile'
->>>>>>> Stashed changes
 import {replaceOrInsertComment} from './utils/updateTsJsComment'
 dotenvConfig()
 
@@ -226,17 +222,13 @@ const options: ExtractOptions = {
   EnumDeclaration: true
 }
 
-<<<<<<< Updated upstream
 export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
-=======
-export const documentJsTs = async (file: string): Promise<void> => {
   console.log(`Documenting file: ${file}`)
   // first check if the file is minified
   if (isMinified(file)) {
     console.log(`Skpping, file is minified: ${file}`)
     return
   }
->>>>>>> Stashed changes
   let fileContent = fs.readFileSync(file, 'utf8')
   let documentableParts = extractDocumentableParts(fileContent, options)
 
