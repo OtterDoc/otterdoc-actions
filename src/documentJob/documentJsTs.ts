@@ -225,6 +225,8 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
 
   if (documentableParts.length === 0) {
     console.log(`No documentable parts found in file: ${file}`)
+  } else {
+    console.log(`Documenting file: ${file}`)
   }
 
   // Sort documentableParts in descending order by lineNumber
@@ -236,7 +238,6 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
   let fileContentLines = fileContent.split('\n')
 
   for await (const part of documentableParts) {
-
     // Check if the part exceeds the token limit
     const tokens = encode(part.code)
     if (tokens.length > 4096) {

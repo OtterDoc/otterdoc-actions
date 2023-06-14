@@ -2,6 +2,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import ignore, {Ignore} from 'ignore'
 import {DocumentTypeScriptFile} from './documentJsTs'
+import Bottleneck from 'bottleneck'
 
 export const shouldProcessFile = (file: string): boolean => {
   const ext = path.extname(file)
@@ -110,13 +111,13 @@ export const DocumentRepo = async (directoryPath: string): Promise<void> => {
 
   console.log(`Found ${filesToDocument.length} files to document`)
 
-  let currentCount = 0
-  for await (const file of filesToDocument) {
-    console.log(
-      `[${currentCount}/${filesToDocument.length}]Processing file: ${file}`
-    )
-    await DocumentTypeScriptFile(file)
-    console.log(`Done processing file: ${file}`)
-    currentCount++
+  const limiter = new Bottleneck({
+    maxConcurrent: 1
+  })
+
+  console.log(`Setting up the queue`)
+  for (const file of filesToDocument) {
+    limiter.schedule(() => DocumentTypeScriptFile(file))
   }
+  console.log(`Finished adding all files to the queue`)
 }
