@@ -1,0 +1,48 @@
+name: 'OtterDoc Documentation'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - '*'
+  pull_request:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# This allows a subsequently queued workflow run to interrupt previous runs
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  otter-document-code:
+    runs-on: ${{ fromJSON('["ubuntu-latest", "self-hosted"]')[github.repository == 'github/docs-internal'] }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      # This saves the branch name under the id 'extract_branch' so it can be used in the pull request
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      # Run the otterdoc checker
+      - name: Run OtterDoc
+        uses: Hedge-Finance/otterdoc-actions@main # TODO Change this. Testing only
+        with:
+          key: ${{ secrets.OTTERDOC_KEY }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5.0.1
+        with:
+            author: OtterDoc <otter@otterdoc.ai>
+            commit-message: OtterDoc - Update function documentation
+            title: OtterDoc - Update function documentation
+            body: OtterDoc - Update function documentation
+            base: ${{ steps.extract_branch.outputs.branch }}
+            labels: documentation, typescript
+            branch: '${{ steps.extract_branch.outputs.branch }}-otterdoc'
+            delete-branch: true

@@ -1,0 +1,14 @@
+{
+  "name": "OtterDoc AI Doc Writer",
+  "description": "OtterDoc starter workflow.",
+  "iconName": "otterdoc-logo",
+  "categories": [
+    "code-quality",
+    "utilities",
+    "TypeScript",
+    "JavaScript",
+    "Documentation",
+    "TSDocs"
+  ],
+  "labels": ["preview"]
+}
