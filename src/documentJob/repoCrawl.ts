@@ -112,7 +112,7 @@ export const DocumentRepo = async (directoryPath: string): Promise<void> => {
   console.log(`Found ${filesToDocument.length} files to document`)
 
   const limiter = new Bottleneck({
-    maxConcurrent: 1
+    maxConcurrent: 10
   })
 
   console.log(`Setting up the queue`)

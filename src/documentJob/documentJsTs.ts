@@ -225,8 +225,7 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
 
   if (documentableParts.length === 0) {
     console.log(`No documentable parts found in file: ${file}`)
-  } else {
-    console.log(`Documenting file: ${file}`)
+    return
   }
 
   // Sort documentableParts in descending order by lineNumber
@@ -245,7 +244,7 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
       continue
     }
 
-    console.log(`Documentable Part in file ${file}:`)
+    console.log(`PART ${file}:`)
     console.log(
       `    ::`,
       part.nodeDisplayName.substring(0, 50),
@@ -269,4 +268,6 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
 
   // Write the modified file content to the original file, thus overwriting it
   fs.writeFileSync(file, updatedFileContent)
+
+  console.log(`DONE: ${file}`)
 }
