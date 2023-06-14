@@ -66,6 +66,7 @@ const generateDocumentation = async (
   try {
     const otterdocUrl = process.env.OTTERDOC_URL || 'https://www.otterdoc.ai'
 
+    console.log(`    Requesting comment for code...`)
     const previousComment =
       part.leadingComments && part.leadingComments.length > 0
         ? part.leadingComments[0].comment
@@ -86,14 +87,18 @@ const generateDocumentation = async (
     )
 
     if (!response.data) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+      console.error('    Request error! status: ${response.status}')
+      throw new Error(`Request error! status: ${response.status}`)
     }
 
     const data = response.data as ResponseData
     const documentation = data.comment
+
+    console.log(`    Successfully Generated Comment.`)
+
     return documentation
   } catch (error) {
-    console.error('Error during API request:', error)
+    console.error('    Failed to generate comment for code.')
     return null
   }
 }
@@ -216,16 +221,7 @@ export const documentJsTs = async (file: string): Promise<void> => {
   let fileContent = fs.readFileSync(file, 'utf8')
   let documentableParts = extractDocumentableParts(fileContent, options)
 
-  if (documentableParts.length > 0) {
-    documentableParts.forEach((part, index) => {
-      console.log(`Documentable Part in file ${file}:`)
-      console.log(
-        `    ${index + 1}:`,
-        part.nodeDisplayName.substring(0, 50),
-        part.nodeDisplayName.length > 50 ? '...' : ''
-      )
-    })
-  } else {
+  if (documentableParts.length === 0) {
     console.log(`No documentable parts found in file: ${file}`)
   }
 
@@ -237,13 +233,22 @@ export const documentJsTs = async (file: string): Promise<void> => {
   // Create a copy of the file content split by lines
   let fileContentLines = fileContent.split('\n')
 
-  for (const part of documentableParts) {
+  for (const index in documentableParts) {
+    const part = documentableParts[index]
+
     // Check if the part exceeds the token limit
     const tokens = encode(part.code)
     if (tokens.length > 4096) {
       console.log(`Part exceeds the token limit. Cannot document at this time.`)
       continue
     }
+
+    console.log(`Documentable Part in file ${file}:`)
+    console.log(
+      `    ${index + 1}:`,
+      part.nodeDisplayName.substring(0, 50),
+      part.nodeDisplayName.length > 50 ? '...' : ''
+    )
 
     // Generate the documentation for this part
     // will be nothing if it fails

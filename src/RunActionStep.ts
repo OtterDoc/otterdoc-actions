@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import {documentRepo} from './documentJob/repoCrawl'
+import {DocumentRepo} from './documentJob/repoCrawl'
 import {VerifyOtterDocKey} from './verify-key'
 import {config as dotenvConfig} from 'dotenv'
 dotenvConfig()
@@ -37,7 +37,7 @@ export async function RunActionStep(): Promise<boolean> {
       return false
     }
 
-    await documentRepo(process.env.GITHUB_WORKSPACE || __dirname)
+    await DocumentRepo(process.env.GITHUB_WORKSPACE || __dirname)
 
     console.log('Done documenting repo')
   } catch (error) {

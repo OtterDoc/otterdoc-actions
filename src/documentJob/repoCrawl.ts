@@ -70,7 +70,7 @@ const traverseDirectory = async (
   await Promise.all(tasks)
 }
 
-export const documentRepo = async (directoryPath: string): Promise<void> => {
+export const DocumentRepo = async (directoryPath: string): Promise<void> => {
   const basePath = path.join(directoryPath)
   const gitignore = await readIgnoreFile(basePath, '.gitignore')
   const dockerignore = await readIgnoreFile(basePath, '.dockerignore')
