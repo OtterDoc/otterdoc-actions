@@ -86,6 +86,8 @@ const generateDocumentation = async (
       }
     )
 
+    console.log(`    Request finished.`)
+
     if (!response.data) {
       console.error('    Request error! status: ${response.status}')
       throw new Error(`Request error! status: ${response.status}`)
