@@ -21,5 +21,5 @@ export function getPercentComplete(): string {
   if (completedFiles === 0) {
     return `0%`
   }
-  return `${Math.floor((completedFiles / totalFiles) * 100)}%`
+  return `[${Math.floor((completedFiles / totalFiles) * 100)}%](${completedFiles}/${totalFiles} files complete) `
 }

@@ -221,7 +221,7 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
 
   if (documentableParts.length === 0) {
     console.log(
-      `(${getPercentComplete()} Complete) - Nothing to document in ${file}`
+      `${getPercentComplete()}- Nothing to document in ${file}`
     )
     return
   }
@@ -255,7 +255,7 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
     }
 
     console.log(
-      `(${getPercentComplete()} Complete) - Finished part [${i++}/${
+      `${getPercentComplete()}- Finished part [${i++}/${
         documentableParts.length
       }] of ${file}:`,
       part.nodeDisplayName.substring(0, 50),
@@ -270,5 +270,5 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
   fs.writeFileSync(file, updatedFileContent)
   inclementCount()
 
-  console.log(`(${getPercentComplete()} Complete) - Done with ${file}`)
+  console.log(`${getPercentComplete()}- Done with ${file}`)
 }
