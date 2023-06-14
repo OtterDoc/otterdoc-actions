@@ -117,7 +117,7 @@ export const DocumentRepo = async (directoryPath: string): Promise<void> => {
   console.log(`Found ${filesToDocument.length} files to document`)
 
   const limiter = new Bottleneck({
-    maxConcurrent: 10
+    maxConcurrent: 25
   })
 
   for (const file of filesToDocument) {
