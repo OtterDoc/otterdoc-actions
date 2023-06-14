@@ -92,7 +92,7 @@ export const DocumentRepo = async (directoryPath: string): Promise<void> => {
   // Create a combined ignore object
   const combinedIgnore = ignore()
   combinedIgnore.add('**/.*') // Ignore all hidden files and directories
-  combinedIgnore.add('*.compressed.js')
+  combinedIgnore.add(['*.compressed.js','*.min.js'])
   if (gitignore) {
     combinedIgnore.add(gitignore)
   }

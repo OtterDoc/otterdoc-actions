@@ -9,6 +9,7 @@ import {
   getNodeTypeString,
   isNodeExported
 } from './utils/nodeTypeHelper'
+import { isMinified } from './utils/isMinifiedFile'
 import {replaceOrInsertComment} from './utils/updateTsJsComment'
 dotenvConfig()
 
@@ -222,6 +223,12 @@ const options: ExtractOptions = {
 }
 
 export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
+  console.log(`Documenting file: ${file}`)
+  // first check if the file is minified
+  if (isMinified(file)) {
+    console.log(`Skpping, file is minified: ${file}`)
+    return
+  }
   let fileContent = fs.readFileSync(file, 'utf8')
   let documentableParts = extractDocumentableParts(fileContent, options)
 
