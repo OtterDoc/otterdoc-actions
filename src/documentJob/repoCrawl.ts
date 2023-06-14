@@ -3,6 +3,10 @@ import path from 'path'
 import ignore, {Ignore} from 'ignore'
 import {DocumentTypeScriptFile} from './documentJsTs'
 import Bottleneck from 'bottleneck'
+import { setTotal } from './utils/Progress'
+
+let totalFiles = 0
+let totalFilesProcessed = 0
 
 export const shouldProcessFile = (file: string): boolean => {
   const ext = path.extname(file)
@@ -109,15 +113,14 @@ export const DocumentRepo = async (directoryPath: string): Promise<void> => {
     combinedIgnore
   )
 
+  setTotal(filesToDocument.length)
   console.log(`Found ${filesToDocument.length} files to document`)
 
   const limiter = new Bottleneck({
     maxConcurrent: 10
   })
 
-  console.log(`Setting up the queue`)
   for (const file of filesToDocument) {
     limiter.schedule(() => DocumentTypeScriptFile(file))
   }
-  console.log(`Finished adding all files to the queue`)
 }

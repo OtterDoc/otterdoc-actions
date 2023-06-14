@@ -1,14 +1,15 @@
 import axios from 'axios'
-import {config as dotenvConfig} from 'dotenv'
+import { config as dotenvConfig } from 'dotenv'
 import fs from 'fs'
-import {encode} from 'gpt-3-encoder'
+import { encode } from 'gpt-3-encoder'
 import ts from 'typescript'
+import { getPercentComplete, inclementCount } from './utils/Progress'
 import {
   getNodeDisplayName,
   getNodeTypeString,
   isNodeExported
 } from './utils/nodeTypeHelper'
-import {replaceOrInsertComment} from './utils/updateTsJsComment'
+import { replaceOrInsertComment } from './utils/updateTsJsComment'
 dotenvConfig()
 
 /**
@@ -219,7 +220,9 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
   let documentableParts = extractDocumentableParts(fileContent, options)
 
   if (documentableParts.length === 0) {
-    console.log(`No documentable parts found in file: ${file}`)
+    console.log(
+      `(${getPercentComplete()} Complete) - Nothing to document in ${file}`
+    )
     return
   }
 
@@ -231,6 +234,7 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
   // Create a copy of the file content split by lines
   let fileContentLines = fileContent.split('\n')
 
+  let i = 1
   for await (const part of documentableParts) {
     // Check if the part exceeds the token limit
     const tokens = encode(part.code)
@@ -238,13 +242,6 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
       console.log(`Part exceeds the token limit. Cannot document at this time.`)
       continue
     }
-
-    console.log(`PART ${file}:`)
-    console.log(
-      `    ::`,
-      part.nodeDisplayName.substring(0, 50),
-      part.nodeDisplayName.length > 50 ? '...' : ''
-    )
 
     // Generate the documentation for this part
     // will be nothing if it fails
@@ -256,6 +253,14 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
         part
       )
     }
+
+    console.log(
+      `(${getPercentComplete()} Complete) - Finished part [${i++}/${
+        documentableParts.length
+      }] of ${file}:`,
+      part.nodeDisplayName.substring(0, 50),
+      part.nodeDisplayName.length > 50 ? '...' : ''
+    )
   }
 
   // Join the modified file content
@@ -263,6 +268,7 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
 
   // Write the modified file content to the original file, thus overwriting it
   fs.writeFileSync(file, updatedFileContent)
+  inclementCount()
 
-  console.log(`DONE: ${file}`)
+  console.log(`(${getPercentComplete()} Complete) - Done with ${file}`)
 }
