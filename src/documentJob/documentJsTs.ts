@@ -233,8 +233,7 @@ export const documentJsTs = async (file: string): Promise<void> => {
   // Create a copy of the file content split by lines
   let fileContentLines = fileContent.split('\n')
 
-  for (const index in documentableParts) {
-    const part = documentableParts[index]
+  for await (const part of documentableParts) {
 
     // Check if the part exceeds the token limit
     const tokens = encode(part.code)
@@ -245,7 +244,7 @@ export const documentJsTs = async (file: string): Promise<void> => {
 
     console.log(`Documentable Part in file ${file}:`)
     console.log(
-      `    ${index + 1}:`,
+      `    ::`,
       part.nodeDisplayName.substring(0, 50),
       part.nodeDisplayName.length > 50 ? '...' : ''
     )
