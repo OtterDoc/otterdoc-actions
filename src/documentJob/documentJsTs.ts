@@ -66,7 +66,6 @@ const generateDocumentation = async (
   try {
     const otterdocUrl = process.env.OTTERDOC_URL || 'https://www.otterdoc.ai'
 
-    console.log(`    Requesting comment for code...`)
     const previousComment =
       part.leadingComments && part.leadingComments.length > 0
         ? part.leadingComments[0].comment
@@ -86,17 +85,13 @@ const generateDocumentation = async (
       }
     )
 
-    console.log(`    Request finished.`)
-
     if (!response.data) {
-      console.error('    Request error! status: ${response.status}')
+      console.error(`    Request error! status: ${response.status}`)
       throw new Error(`Request error! status: ${response.status}`)
     }
 
     const data = response.data as ResponseData
     const documentation = data.comment
-
-    console.log(`    Successfully Generated Comment.`)
 
     return documentation
   } catch (error) {
