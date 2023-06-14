@@ -1,15 +1,15 @@
 import axios from 'axios'
-import { config as dotenvConfig } from 'dotenv'
+import {config as dotenvConfig} from 'dotenv'
 import fs from 'fs'
-import { encode } from 'gpt-3-encoder'
+import {encode} from 'gpt-3-encoder'
 import ts from 'typescript'
-import { getPercentComplete, inclementCount } from './utils/Progress'
+import {getPercentComplete, inclementCount} from './utils/Progress'
 import {
   getNodeDisplayName,
   getNodeTypeString,
   isNodeExported
 } from './utils/nodeTypeHelper'
-import { replaceOrInsertComment } from './utils/updateTsJsComment'
+import {replaceOrInsertComment} from './utils/updateTsJsComment'
 dotenvConfig()
 
 /**
@@ -66,6 +66,12 @@ const generateDocumentation = async (
 ): Promise<string | null> => {
   try {
     const otterdocUrl = process.env.OTTERDOC_URL || 'https://www.otterdoc.ai'
+
+    const numberOfLines = part.code.split('\n').length
+
+    if (numberOfLines < 10) {
+      return null
+    }
 
     const previousComment =
       part.leadingComments && part.leadingComments.length > 0
@@ -220,9 +226,7 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
   let documentableParts = extractDocumentableParts(fileContent, options)
 
   if (documentableParts.length === 0) {
-    console.log(
-      `${getPercentComplete()}- Nothing to document in ${file}`
-    )
+    console.log(`${getPercentComplete()}- Nothing to document in ${file}`)
     return
   }
 
