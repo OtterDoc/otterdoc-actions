@@ -230,11 +230,6 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
     return
   }
 
-  if (documentableParts.length > 25) {
-    console.log(`${getPercentComplete()}- File too large. ${file}`)
-    return
-  }
-
   // Sort documentableParts in descending order by lineNumber
   documentableParts = documentableParts.sort(
     (a, b) => b.lineNumber! - a.lineNumber!
