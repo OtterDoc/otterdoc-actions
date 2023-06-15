@@ -5,6 +5,9 @@ inputs:
   key:
     required: true
     description: 'An API key for OtterDoc'
+  includeFiles:
+    required: false
+    description: '[Optional] If included, OtterDoc will only document the files specified'
 runs:
   using: 'node16'
   main: 'dist/index.js'

@@ -1,9 +1,10 @@
-import fs from 'fs/promises'
-import path from 'path'
-import ignore, {Ignore} from 'ignore'
-import {DocumentTypeScriptFile} from './documentJsTs'
+import * as core from '@actions/core'
 import Bottleneck from 'bottleneck'
-import { setTotal } from './utils/Progress'
+import fs from 'fs/promises'
+import ignore, {Ignore} from 'ignore'
+import path from 'path'
+import {DocumentTypeScriptFile} from './documentJsTs'
+import {setTotal} from './utils/Progress'
 
 let totalFiles = 0
 let totalFilesProcessed = 0
@@ -92,7 +93,7 @@ export const DocumentRepo = async (directoryPath: string): Promise<void> => {
   // Create a combined ignore object
   const combinedIgnore = ignore()
   combinedIgnore.add('**/.*') // Ignore all hidden files and directories
-  combinedIgnore.add(['*.compressed.js','*.min.js'])
+  combinedIgnore.add(['*.compressed.js', '*.min.js'])
   if (gitignore) {
     combinedIgnore.add(gitignore)
   }
@@ -107,11 +108,20 @@ export const DocumentRepo = async (directoryPath: string): Promise<void> => {
     console.log('Skipping files based on ignore config')
   }
 
-  const filesToDocument = await traverseDirectory(
+  let filesToDocument = await traverseDirectory(
     basePath,
     basePath,
     combinedIgnore
   )
+
+  // Filter files based on includeFiles input
+  const includeFiles: string = core.getInput('includeFiles')
+  if (includeFiles) {
+    const include = ignore().add(includeFiles)
+    filesToDocument = filesToDocument.filter(file => {
+      return include.ignores(path.relative(basePath, file))
+    })
+  }
 
   setTotal(filesToDocument.length)
   console.log(`Found ${filesToDocument.length} files to document`)
