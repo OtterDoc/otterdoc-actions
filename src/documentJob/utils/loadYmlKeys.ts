@@ -3,7 +3,7 @@ import * as core from '@actions/core'
 interface Inputs {
   model: string;
   ignoreAlreadyCommented: boolean;
-  ignoreSingleLineFunctions: boolean;
+  functionLineThreshold: number;
 }
 
 export function loadYmlKeys(): Inputs {
@@ -11,7 +11,7 @@ export function loadYmlKeys(): Inputs {
 
     // Convert the string inputs to boolean
     const ignoreAlreadyCommented = core.getInput('ignore-already-commented') === 'true'
-    const ignoreSingleLineFunctions = core.getInput('ignore-single-line-functions') === 'true'
+    const functionLineThreshold = parseInt(core.getInput('function-line-threshold'))
 
-    return { model, ignoreAlreadyCommented, ignoreSingleLineFunctions }
+    return { model, ignoreAlreadyCommented, functionLineThreshold }
 }

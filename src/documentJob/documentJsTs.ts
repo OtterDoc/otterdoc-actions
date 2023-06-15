@@ -87,7 +87,8 @@ const generateDocumentation = async (
         apiKey: process.env.INPUT_KEY,
         functionString: part.code,
         previousComment: previousComment,
-        funcType: part.type
+        funcType: part.type,
+        model: ymlKeys.model,
       },
       {
         headers: {
@@ -97,7 +98,7 @@ const generateDocumentation = async (
     )
 
     if (!response.data) {
-      console.error(`    Request error! status: ${response.status}`)
+      console.error('Request error! status: ${response.status}')
       throw new Error(`Request error! status: ${response.status}`)
     }
 
@@ -106,7 +107,7 @@ const generateDocumentation = async (
 
     return documentation
   } catch (error) {
-    console.error('    Failed to generate comment for code.')
+    console.error('Failed to generate comment for code.')
     return null
   }
 }
@@ -158,12 +159,12 @@ const extractDocumentableParts = (
    */
   function visit(node: ts.Node): void {
     // check if the function is a short function
-    if (ymlKeys.ignoreSingleLineFunctions) {
+    if (ymlKeys.functionLineThreshold) {
       const functionLines = code
         .substring(node.getStart(), node.getEnd())
         .split('\n')
         .filter(line => line.trim().length > 0)
-      const isShortFunction = functionLines.length <= 2 // Adjust the threshold as needed
+      const isShortFunction = functionLines.length <= ymlKeys.functionLineThreshold
 
       if (isShortFunction) {
         // Skip short functions without adding them to the documentable parts
@@ -215,7 +216,7 @@ const extractDocumentableParts = (
       if (ymlKeys.ignoreAlreadyCommented && comments.length > 0) {
         return
       }
-      
+
       const start =
         sourceFile.getLineAndCharacterOfPosition(node.getStart()).line + 1
       documentableParts.push({

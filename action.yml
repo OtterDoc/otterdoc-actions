@@ -16,10 +16,10 @@ inputs:
     required: false
     description: 'Whether to ignore functions that already have a comment'
     default: false
-  ignore-single-line-functions:
+  function-line-threshold:
     required: false
-    description: 'Whether to generate documentation for single-line functions'
-    default: false
+    description: ''
+    default: 3
 runs:
   using: 'node16'
   main: 'dist/index.js'
