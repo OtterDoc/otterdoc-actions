@@ -131,6 +131,6 @@ export const DocumentRepo = async (directoryPath: string): Promise<void> => {
   })
 
   for (const file of filesToDocument) {
-    limiter.schedule(() => DocumentTypeScriptFile(file))
-  }
+    limiter.schedule(async () => DocumentTypeScriptFile(file))
+  }  
 }

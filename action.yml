@@ -8,10 +8,21 @@ inputs:
   includeFiles:
     required: false
     description: '[Optional] If included, OtterDoc will only document the files specified'
+  model:
+    required: false
+    description: 'The model to use for generating documentation'
+    default: 'gpt3.5'
+  ignore-already-commented:
+    required: false
+    description: 'Whether to ignore functions that already have a comment'
+    default: false
+  ignore-single-line-functions:
+    required: false
+    description: 'Whether to generate documentation for single-line functions'
+    default: false
 runs:
   using: 'node16'
   main: 'dist/index.js'
-
 branding:
   icon: 'terminal'
   color: 'purple'
