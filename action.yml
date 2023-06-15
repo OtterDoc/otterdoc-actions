@@ -8,6 +8,7 @@ inputs:
   includeFiles:
     required: false
     description: '[Optional] If included, OtterDoc will only document the files specified'
+    default: false
   model:
     required: false
     description: 'The model to use for generating documentation'
