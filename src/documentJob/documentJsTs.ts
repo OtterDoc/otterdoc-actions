@@ -107,7 +107,7 @@ const generateDocumentation = async (
 
     return documentation
   } catch (error) {
-    console.error('Failed to generate comment for code.')
+    console.error('Failed to generate comment for code:', error)
     return null
   }
 }
