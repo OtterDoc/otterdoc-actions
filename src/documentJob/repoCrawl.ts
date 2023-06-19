@@ -37,7 +37,7 @@ const traverseDirectory = async (
   directoryPath: string,
   basePath: string,
   ig: Ignore | null,
-  maxDepth = 3
+  maxDepth = 20
 ): Promise<string[]> => {
   if (maxDepth < 0) {
     console.log(`Max depth reached for directory: ${directoryPath}`)
