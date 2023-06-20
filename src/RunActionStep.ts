@@ -11,7 +11,7 @@ export async function RunActionStep(): Promise<boolean> {
     `Documenting code in this directory: '${process.env.GITHUB_WORKSPACE}'`
   )
   try {
-    const key: string = core.getInput('key')
+    const key: string = core.getInput('key') || process.env.OTTERDOC_KEY || ''
 
     if (!(await VerifyOtterDocKey(key))) {
       console.log('Invalid API key')

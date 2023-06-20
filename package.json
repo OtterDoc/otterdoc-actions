@@ -36,6 +36,7 @@
     "@types/babel__traverse": "^7.20.0",
     "axios": "^1.4.0",
     "bottleneck": "^2.19.5",
+    "commander": "^11.0.0",
     "dotenv": "^16.0.3",
     "gpt-3-encoder": "^1.1.4",
     "ncc": "^0.2.0",

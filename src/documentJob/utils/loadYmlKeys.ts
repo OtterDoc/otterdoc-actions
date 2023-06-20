@@ -7,7 +7,7 @@ interface Inputs {
 }
 
 export function loadYmlKeys(): Inputs {
-    const model = core.getInput('model')
+    const model = core.getInput('model') || 'gpt3.5'
 
     // Convert the string inputs to boolean
     const ignoreAlreadyCommented = core.getInput('ignore-already-commented') === 'true'
