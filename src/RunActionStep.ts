@@ -1,4 +1,5 @@
 import * as core from '@actions/core'
+import fs from 'fs'
 import {DocumentRepo} from './documentJob/repoCrawl'
 import {VerifyOtterDocKey} from './verify-key'
 import {config as dotenvConfig} from 'dotenv'
@@ -10,6 +11,14 @@ export async function RunActionStep(): Promise<boolean> {
   console.log(
     `Documenting code in this directory: '${process.env.GITHUB_WORKSPACE}'`
   )
+  // print out directory contents
+  try {
+    const files = fs.readdirSync(process.env.GITHUB_WORKSPACE || __dirname)
+    console.log('Files in directory:', files)
+  } catch (error) {
+    console.error(`Error reading directory: ${error.message}`)
+  }
+
   try {
     const key: string = core.getInput('key') || process.env.OTTERDOC_KEY || ''
 
