@@ -6,7 +6,7 @@ import {config as dotenvConfig} from 'dotenv'
 dotenvConfig()
 
 export async function RunActionStep(): Promise<boolean> {
-  console.log('Running Otterdoc Action Step')
+  console.log('Running Otterdoc Action Step v0.1a')
   console.log(`The current path is: '${__dirname}'`)
   console.log(
     `Documenting code in this directory: '${process.env.GITHUB_WORKSPACE}'`
