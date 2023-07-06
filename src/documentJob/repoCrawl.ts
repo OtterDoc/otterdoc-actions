@@ -39,6 +39,7 @@ const traverseDirectory = async (
   ig: Ignore | null,
   maxDepth = 20
 ): Promise<string[]> => {
+  console.log(`Traversing directory: ${directoryPath} with base: ${basePath}`)
   if (maxDepth < 0) {
     console.log(`Max depth reached for directory: ${directoryPath}`)
     return []
@@ -85,8 +86,10 @@ const traverseDirectory = async (
 }
 
 export const DocumentRepo = async (directoryPath: string): Promise<void> => {
+  console.log(`Documenting repo at: ${directoryPath}`)
   const basePath = path.join(directoryPath)
   const gitignore = await readIgnoreFile(basePath, '.gitignore')
+  console.log(`gitignore: ${gitignore}`)
   const dockerignore = await readIgnoreFile(basePath, '.dockerignore')
   const otterdocIgnore = await readIgnoreFile(basePath, '.otterdocignore')
 
@@ -106,10 +109,11 @@ export const DocumentRepo = async (directoryPath: string): Promise<void> => {
 
   if (combinedIgnore) {
     console.log('Skipping files based on ignore config')
+    console.log(combinedIgnore)
   }
 
   let filesToDocument = await traverseDirectory(
-    basePath,
+    directoryPath,
     basePath,
     combinedIgnore
   )
