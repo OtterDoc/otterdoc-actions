@@ -16,7 +16,11 @@ export async function RunActionStep(): Promise<boolean> {
     const files = fs.readdirSync(process.env.GITHUB_WORKSPACE || __dirname)
     console.log('Files in directory:', files)
   } catch (error) {
-    console.error(`Error reading directory: ${error.message}`)
+    if (error instanceof Error) {
+      console.error(`Error reading directory: ${error.message}`)
+    } else {
+      console.error(`An unexpected error occurred: ${error}`)
+    }
   }
 
   try {
