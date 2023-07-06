@@ -1,7 +1,9 @@
 #!/usr/bin/env ts-node
 
-import * as path from 'path'
-require('dotenv').config({path: path.resolve(__dirname, './.env')})
+import dotenv from 'dotenv'
+import path from 'path'
+
+dotenv.config({path: path.resolve(__dirname, './.env')})
 
 import {RunActionStep} from './src/RunActionStep'
 
@@ -47,8 +49,8 @@ console.log(`Included File Filter: ${process.env['INPUT_INCLUDEFILES']}`)
  * @function
  * @returns {void}
  */
-async function Go() {
-  await RunActionStep()
+async function Go(): Promise<void> {
+  await RunActionStep();
 }
 
 Go()
