@@ -65,10 +65,11 @@ const traverseDirectory = async (
 
     if (entry.isFile()) {
       try {
-        console.log(`Processing file: ${entryPath}`)
+        // console.log(`Processing file: ${entryPath}`)
         const shouldProcess = shouldProcessFile(entryPath)
-        console.log(`Should process file ${entryPath}? ${shouldProcess}`)
+        // console.log(`Should process file ${entryPath}? ${shouldProcess}`)
         if (shouldProcess) {
+          console.log(`Found file to add: ${entryPath}`)
           filePaths.push(entryPath)
         }
       } catch (error) {
@@ -121,6 +122,8 @@ export const DocumentRepo = async (directoryPath: string): Promise<void> => {
     combinedIgnore
   )
 
+  console.log(`Found ${filesToDocument.length} files to document`)
+  
   // Filter files based on includeFiles input
   const includeFiles: string = core.getInput('includeFiles')
   if (includeFiles) {
