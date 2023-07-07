@@ -65,7 +65,10 @@ const traverseDirectory = async (
 
     if (entry.isFile()) {
       try {
-        if (shouldProcessFile(entryPath)) {
+        console.log(`Processing file: ${entryPath}`)
+        const shouldProcess = shouldProcessFile(entryPath)
+        console.log(`Should process file ${entryPath}? ${shouldProcess}`)
+        if (shouldProcess) {
           filePaths.push(entryPath)
         }
       } catch (error) {
