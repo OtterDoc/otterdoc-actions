@@ -1,5 +1,4 @@
-import fs from 'fs'
-import path from 'path'
+import models from './languageModels.json'
 
 type Model = {
   type: string;
@@ -11,9 +10,6 @@ type Model = {
 type ModelsMaxTokens = { [key: string]: number }
 
 export const loadLanguageModels = (): ModelsMaxTokens => {
-  const modelsPath = path.join(__dirname, './languageModels.json')
-  const modelsData = fs.readFileSync(modelsPath, 'utf-8')
-  const models: Model[] = JSON.parse(modelsData)
   const modelsMaxTokens: ModelsMaxTokens = {}
 
   models.forEach((model: Model) => {
