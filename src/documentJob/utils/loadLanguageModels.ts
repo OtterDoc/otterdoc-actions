@@ -11,7 +11,7 @@ type Model = {
 type ModelsMaxTokens = { [key: string]: number }
 
 export const loadLanguageModels = (): ModelsMaxTokens => {
-  const modelsPath = path.join(__dirname, 'languageModels.json')
+  const modelsPath = path.join(__dirname, './languageModels.json')
   const modelsData = fs.readFileSync(modelsPath, 'utf-8')
   const models: Model[] = JSON.parse(modelsData)
   const modelsMaxTokens: ModelsMaxTokens = {}
