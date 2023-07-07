@@ -5,6 +5,11 @@ import {VerifyOtterDocKey} from './verify-key'
 import {config as dotenvConfig} from 'dotenv'
 dotenvConfig()
 
+/**
+ * Runs the Otterdoc Action Step.
+ *
+ * @returns {Promise<boolean>} - A promise that resolves to a boolean indicating the success of the action step.
+ */
 export async function RunActionStep(): Promise<boolean> {
   console.log('Running Otterdoc Action Step v0.1b')
   console.log(`The current path is: '${__dirname}'`)

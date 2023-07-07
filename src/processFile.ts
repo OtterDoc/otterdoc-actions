@@ -70,8 +70,10 @@ export async function GetCommentedFileString(
       declarations.push(path)
     },
     /**
-     * Traverses a ClassDeclaration path and pushes all declarations and ClassMethod paths to an array.
-     * @param {NodePath} path - The ClassDeclaration path to traverse.
+     * Adds the provided innerPath to the declarations array.
+     *
+     * @param {string} innerPath - The inner path to add to the declarations array.
+     * @returns {void}
      */
     ClassDeclaration(path) {
       declarations.push(path)

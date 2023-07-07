@@ -158,6 +158,7 @@ const extractDocumentableParts = (
    * Visits a TypeScript node and adds it to the list of documentable parts if it meets certain criteria.
    * @param node The TypeScript node to visit.
    * @returns void
+   * @remarks This function checks if the provided node is a function that meets certain criteria for documentation, such as being longer than a certain number of lines and having a TypeDoc comment directly above it with an empty line in between. If the node meets these criteria, it is added to the list of documentable parts with information such as its type, code, and line number.
    */
   function visit(node: ts.Node): void {
     // check if the function is a short function
