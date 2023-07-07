@@ -134,19 +134,12 @@ export const DocumentRepo = async (directoryPath: string): Promise<void> => {
     combinedIgnore.add(otterdocIgnore)
   }
 
-  if (combinedIgnore) {
-    console.log('Skipping files based on ignore config')
-    console.log(combinedIgnore)
-  }
-
   let filesToDocument = await traverseDirectory(
     directoryPath,
     basePath,
     combinedIgnore
   )
 
-  console.log(`Found ${filesToDocument.length} files to document`)
-  
   // Add files based on includeFiles input
   const includeFiles: string = core.getInput('includeFiles')
   filesToDocument = addIncludedFiles(includeFiles, basePath, filesToDocument)
