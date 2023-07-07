@@ -1,10 +1,12 @@
 import * as core from '@actions/core'
 import Bottleneck from 'bottleneck'
-import fs from 'fs/promises'
-import ignore, {Ignore} from 'ignore'
+import fs from 'fs'
+import { promises as fSAsync } from 'fs'
 import path from 'path'
+import ignore, {Ignore} from 'ignore'
 import {DocumentTypeScriptFile} from './documentJsTs'
 import {setTotal} from './utils/Progress'
+
 
 let totalFiles = 0
 let totalFilesProcessed = 0
@@ -26,7 +28,7 @@ const readIgnoreFile = async (
 ): Promise<Ignore | null> => {
   const filePath = path.join(basePath, filename)
   try {
-    const fileContent = await fs.readFile(filePath, 'utf-8')
+    const fileContent = await fSAsync.readFile(filePath, 'utf-8')
     return ignore().add(fileContent)
   } catch (error) {
     return null
@@ -47,7 +49,7 @@ const traverseDirectory = async (
 
   let filesAndFolders
   try {
-    filesAndFolders = await fs.readdir(directoryPath, {withFileTypes: true})
+    filesAndFolders = await fs.promises.opendir(directoryPath)
   } catch (error) {
     console.error(`Failed to read this directory 2: ${directoryPath}`)
     return []
@@ -65,9 +67,7 @@ const traverseDirectory = async (
 
     if (entry.isFile()) {
       try {
-        // console.log(`Processing file: ${entryPath}`)
         const shouldProcess = shouldProcessFile(entryPath)
-        // console.log(`Should process file ${entryPath}? ${shouldProcess}`)
         if (shouldProcess) {
           console.log(`Found file to add: ${entryPath}`)
           filePaths.push(entryPath)
@@ -81,12 +81,35 @@ const traverseDirectory = async (
         basePath,
         ig,
         maxDepth - 1
-      ) // Decrease maxDepth by 1
+      )
       filePaths.push(...subfolderFiles)
     }
   }
 
   return filePaths
+}
+
+export const addIncludedFiles = (includeFiles: string, basePath: string, filesToDocument: string[]): string[] => {
+  if (includeFiles) {
+    const includedFilesList = includeFiles.split(',').map(file => file.trim()) // Assuming the files are comma-separated
+    
+    for (const filePath of includedFilesList) {
+      const fullPath = path.join(basePath, filePath)
+      if (fs.existsSync(fullPath)) {
+        const stat = fs.lstatSync(fullPath)
+        if (stat.isDirectory()) {
+          const directoryFiles = fs.readdirSync(fullPath).map((file: string) => path.join(fullPath, file))
+          filesToDocument.push(...directoryFiles)
+        } else if (stat.isFile()) {
+          filesToDocument.push(fullPath)
+        }
+      }
+    }
+    
+    // Removing duplicates
+    filesToDocument = [...new Set(filesToDocument)]
+  }
+  return filesToDocument
 }
 
 export const DocumentRepo = async (directoryPath: string): Promise<void> => {
@@ -124,14 +147,9 @@ export const DocumentRepo = async (directoryPath: string): Promise<void> => {
 
   console.log(`Found ${filesToDocument.length} files to document`)
   
-  // Filter files based on includeFiles input
+  // Add files based on includeFiles input
   const includeFiles: string = core.getInput('includeFiles')
-  if (includeFiles) {
-    const include = ignore().add(includeFiles)
-    filesToDocument = filesToDocument.filter(file => {
-      return include.ignores(path.relative(basePath, file))
-    })
-  }
+  filesToDocument = addIncludedFiles(includeFiles, basePath, filesToDocument)
 
   setTotal(filesToDocument.length)
   console.log(`Found ${filesToDocument.length} files to document`)
