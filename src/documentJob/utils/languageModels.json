@@ -1,0 +1,38 @@
+[
+  {
+    "type": "gpt3.5",
+    "modelName": "gpt-3.5-turbo",
+    "maxTokens": 4096,
+    "available": true
+  },
+  {
+    "type": "gpt3.5",
+    "modelName": "gpt-3.5-turbo-16k",
+    "maxTokens": 16384,
+    "available": true
+  },
+  {
+    "type": "gpt4",
+    "modelName": "gpt-4",
+    "maxTokens": 8192,
+    "available": true
+  },
+  {
+    "type": "gpt4-32k",
+    "modelName": "gpt-4-32k",
+    "maxTokens": 32768,
+    "available": false
+  },
+  {
+    "type": "claude",
+    "modelName": "claude-10k",
+    "maxTokens": 10000,
+    "available": false
+  },
+  {
+    "type": "claude",
+    "modelName": "claude-100k",
+    "maxTokens": 100000,
+    "available": false
+  }
+]

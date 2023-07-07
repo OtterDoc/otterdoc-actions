@@ -50,7 +50,7 @@ console.log(`Included File Filter: ${process.env['INPUT_INCLUDEFILES']}`)
  * @returns {void}
  */
 async function Go(): Promise<void> {
-  await RunActionStep();
+  await RunActionStep()
 }
 
 Go()

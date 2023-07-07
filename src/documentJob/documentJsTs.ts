@@ -12,9 +12,11 @@ import {
 import {isMinified} from './utils/isMinifiedFile'
 import {replaceOrInsertComment} from './utils/updateTsJsComment'
 import {loadYmlKeys} from './utils/loadYmlKeys'
+import {loadLanguageModels} from './utils/loadLanguageModels'
 dotenvConfig()
 
 const ymlKeys = loadYmlKeys()
+const modelsMaxTokens = loadLanguageModels()
 
 /**
  * Interface for response data.
@@ -271,8 +273,15 @@ export const DocumentTypeScriptFile = async (file: string): Promise<void> => {
   for await (const part of documentableParts) {
     // Check if the part exceeds the token limit
     const tokens = encode(part.code)
-    if (tokens.length > 4096) {
-      console.log(`Part exceeds the token limit. Cannot document at this time.`)
+    const modelMaxTokens = modelsMaxTokens[ymlKeys.model]
+    
+    if (!modelMaxTokens) {
+      console.log(`Invalid model: ${ymlKeys.model}`)
+      return
+    }
+    
+    if (tokens.length > modelMaxTokens) {
+      console.log('Part exceeds the token limit. Cannot document at this time.')
       continue
     }
 
