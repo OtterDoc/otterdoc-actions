@@ -25,7 +25,7 @@ jobs:
     runs-on: ${{ fromJSON('["ubuntu-latest", "self-hosted"]')[github.repository == 'github/docs-internal'] }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       # This saves the branch name under the id 'extract_branch' so it can be used in the pull request
       - name: Extract branch name
